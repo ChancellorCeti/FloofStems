@@ -16,13 +16,27 @@ const firebaseConfig = {
 const question=document.getElementById('question')
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+var uptoe=[]
+let issubclicked;
 const an=document.getElementById('an')
+const con=document.getElementsByClassName('config')
 var num;
+let wre=false;
+var wrongstems=[]
+var wrongmeans=[]
 var answer;
-const sub=document.getElementById('sub')
+
+const upto=document.getElementById('upto')
+
+const none=document.querySelector('none')
+var upeto=prompt('up to what stem list should we quiz you?')
 var sixstems=[]
 var sixmeanings=[]
 var correctstems=[]
+const ree=document.getElementById('ree');
+console.log(ree);
+//console.log(submi)
 async function getStems(list){
     const sevRef = collection(db, "Stems");
     
@@ -37,9 +51,42 @@ async function getStems(list){
       sixmeanings.push(doc.data().meaning)
     });
     }
+    let uptoval;
+    const submi=document.getElementById('submi');
+    const moredel=document.getElementById('moredel')
+    submi.addEventListener('click',(e)=>{
+        uptoval=upto.value
+        console.log(uptoval);
+        console.log(upto.value)
+        issubclicked=true;
+        uptoe.push(upto.value)
+        console.log('e')
+        an.classList.remove('none')
+        question.classList.remove('none')
+        console.log(con);
+        /*for(var i=0;i<con.length;i++){
+        console.log('sae')
+        con[i].classList.add('none')
+        con[i].remove()
+        }*/
+        ree.innerHTML='';
+        moredel.innerHTML='';
+        upto.style.opacity='0%';
+        upto.style.width='1px';
+        console.log(issubclicked)
+        main();
+    }
+    )
 async function main(){
-
-    await getStems(20);
+    await issubclicked;
+    console.log(upto.value)
+    console.log("Being quizzed up to list "+uptoval)
+    
+    //console.log(ert)
+    
+    await getStems(upto.value*1);
+    upto.remove()
+    var sixt=sixstems.length;
     console.log(sixstems)
     console.log(sixmeanings)
     console.log(sixstems.length)
@@ -65,7 +112,117 @@ async function main(){
             }else if(an.value==answer&&sixstems.length==1){
                 alert('all done!')
                 an.value=""
-                question.innerHTML="ur done"
+                correctstems.push(sixstems[num])
+                console.log(correctstems);
+                console.log(sixt);
+                var perf=((correctstems.length)/(sixt))*100
+                
+                console.log(correctstems.length);
+                console.log(sixt.length);
+                console.log(perf);
+                var perfbar=document.createElement('h2');
+                var wrongbar=document.createElement('h3');
+                wrongbar.innerHTML="You missed the following stems:"
+                if(wrongstems.length>0){
+                    document.body.appendChild(wrongbar)
+                    for(var h=0;h<wrongstems.length;h++){
+                        var wr=document.createElement('li')
+                        wr.innerHTML=wrongstems[h];
+                        wrongbar.appendChild(wr);
+                    }
+                }
+                perfbar.innerHTML="You had "+perf.toString()+"% accuracy!"
+                addBu(perfbar)
+                //question.innerHTML="ur done"
+            }else if(an.value!=answer&&sixstems.length>1){
+                console.log(wre)
+                
+                if(!wre){
+                    var wrong=document.createElement('h3');
+                var cont=document.createElement('button');
+                wrongstems.push(sixstems[num])
+                wrongmeans.push(sixmeanings[num])
+                console.log(wrongstems)
+                wrong.innerHTML='You got it wrong, the correct answer was '+sixmeanings[num]
+                cont.innerHTML="continue"
+                wre=true;
+                document.body.appendChild(wrong)
+                }
+                
+                console.log(wrong)
+                //wre=false;
+                
+                setTimeout(addBu(cont),2000);
+                cont.addEventListener('click',(e)=>{
+                    wrong.remove()
+                    cont.remove()
+                    sixstems.splice(num,1)
+                    wre=false;
+                sixmeanings.splice(num,1)
+                
+                num=Math.floor(Math.random() * (sixstems.length))
+                console.log(num)
+                question.innerHTML=sixstems[num]
+                answer=sixmeanings[num]
+                an.value=""
+                })
+            }
+            else if(an.value!=answer&&sixstems.length==1){
+                console.log(wre)
+                
+                if(!wre){
+                    var wrong=document.createElement('h3');
+                var cont=document.createElement('button');
+                wrongstems.push(sixstems[num])
+                wrongmeans.push(sixmeanings[num])
+                console.log(wrongstems)
+                wrong.innerHTML='You got it wrong, the correct answer was '+sixmeanings[num]
+                cont.innerHTML="continue"
+                wre=true;
+                document.body.appendChild(wrong)
+                }
+                
+                console.log(wrong)
+                //wre=false;
+                
+                setTimeout(addBu(cont),2000);
+                cont.addEventListener('click',(e)=>{
+                    wrong.remove()
+                    cont.remove()
+                    sixstems.splice(num,1)
+                    wre=false;
+                    //this part
+                    alert('all done!')
+                an.value=""
+                correctstems.push(sixstems[num])
+                console.log(correctstems);
+                console.log(sixt);
+                var perf=((correctstems.length)/(sixt))*100
+                
+                console.log(correctstems.length);
+                console.log(sixt.length);
+                console.log(perf);
+                var perfbar=document.createElement('h2');
+                var wrongbar=document.createElement('h3');
+                wrongbar.innerHTML="You missed the following stems:"
+                if(wrongstems.length>0){
+                    document.body.appendChild(wrongbar)
+                    for(var h=0;h<wrongstems.length;h++){
+                        var wr=document.createElement('li')
+                        wr.innerHTML=wrongstems[h];
+                        wrongbar.appendChild(wr);
+                    }
+                }
+                perfbar.innerHTML="You had "+perf.toString()+"% accuracy!"
+                addBu(perfbar)
+                sixmeanings.splice(num,1)
+                
+                /*num=Math.floor(Math.random() * (sixstems.length))
+                console.log(num)
+                question.innerHTML=sixstems[num]
+                answer=sixmeanings[num]
+                an.value=""*/
+                })
             }
         }
     });
@@ -73,4 +230,7 @@ async function main(){
 }
 
 
-main();
+//await main();
+function addBu(cont){
+    document.body.appendChild(cont)
+}
