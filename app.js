@@ -1,6 +1,7 @@
 import {} from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js'
 const stem=document.getElementById('stem')
 const mean=document.getElementById('mean')
+const quiznum=document.getElementById('quiznum');
 const sub=document.getElementById('submit')
 const list=document.getElementById('list')
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
@@ -25,12 +26,12 @@ var li=list.value;
 setDoc(doc(db, "Stems", stem.value), {
   stem:stem.value,
   meaning: mean.value,
-  list:li.toNumber()
+  list:li*1
 });
 stem.value=""
 mean.value=""
 list.value=""
-
+stem.focus();
 })
 async function getSev(){
 const sevRef = collection(db, "Stems");
